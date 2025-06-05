@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* would like to ignore ./src/pages/og-image/[slug].png.ts */
+@import "tailwindcss";
+/* config for tailwindcss-typography plugin */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.el-dialog {
+    min-width: 360px;
+    padding: 0;
+}
+.el-dialog__header {
+    padding: 10px 16px;
+    border-bottom: 1px solid #e8e8e8;
+}
+.el-dialog__body {
+    padding: 10px 16px;
+}
+.el-dialog__footer {
+    padding: 10px 16px;
+    border-top: 1px solid #e8e8e8;
+    text-align: right;
+}
+.el-card__header {
+    padding: 10px 16px;
+    border-bottom: 1px solid #e8e8e8;
+}
+.el-card__body {
+    padding: 10px;
+}
+@media only screen and (max-width: 480px) {
+    .el-col-xs-12 {
+        display: block;
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+.v-contextmenu {
+    z-index: 100;
+    border-radius: 5px;
+    overflow: hidden;
+}
