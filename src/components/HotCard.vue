@@ -43,13 +43,18 @@ const props = defineProps({
     default: 'baidu',
   },
 })
-const loading = ref(false);
+const loading = ref(true);
 const hotData = ref([]);
 const hotDataStore = useHotDataStore();
 let timer = null;
 
 const fetchHotData = async (auto = false) => {
   loading.value = !auto;
+  if (hotDataStore.hotData.length > 0 && !auto) {
+    hotData.value = hotDataStore.hotData;
+    loading.value = false;
+    return;
+  }
   try {
     const data = await hotDataStore.fetchHotData({ cate: props.type });
     hotData.value = data;

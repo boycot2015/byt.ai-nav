@@ -2,6 +2,67 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import * as cheerio from 'cheerio';
 import axios from 'axios';
+const setHtmlStyleProp = (color) => {
+  /** 变量前缀 */
+  const PRE = '--el-color-primary'
+  /** 浅色变量前缀 */
+  const PRE_LIGHT = `${PRE}-light`
+  /** 深色变量前缀 */
+  const PRE_DARK = `${PRE}-dark`
+  /** 色阶 */
+  const Levels = [3, 5, 7, 8, 9]
+
+  /** 白色 */
+  const WHITE = '#FFFFFF'
+  /** 黑色 */
+  const BLACK = '#000000'
+
+  const html = document.documentElement
+  /**
+   * 混合颜色
+   */
+  const mix = (color1, color2, weight) => {
+      weight = Math.max(Math.min(Number(weight), 1), 0)
+      const r1 = parseInt(color1.substring(1, 3), 16)
+      const g1 = parseInt(color1.substring(3, 5), 16)
+      const b1 = parseInt(color1.substring(5, 7), 16)
+      const r2 = parseInt(color2.substring(1, 3), 16)
+      const g2 = parseInt(color2.substring(3, 5), 16)
+      const b2 = parseInt(color2.substring(5, 7), 16)
+      const r = Math.round(r1 * (1 - weight) + r2 * weight)
+      const g = Math.round(g1 * (1 - weight) + g2 * weight)
+      const b = Math.round(b1 * (1 - weight) + b2 * weight)
+      const _r = ('0' + (r || 0).toString(16)).slice(-2)
+      const _g = ('0' + (g || 0).toString(16)).slice(-2)
+      const _b = ('0' + (b || 0).toString(16)).slice(-2)
+      return '#' + _r + _g + _b
+  }
+  // 设置主要颜色变量 --el-color-primary
+  html.style.setProperty(PRE, color)
+  // 循环设置色阶颜色
+  // --el-color-primary-light-${level}
+  Levels.forEach(level => {
+      html.style.setProperty(`${PRE_LIGHT}-${level}`, mix(color, WHITE, level * 0.1))
+  })
+  // 设置主要暗色
+  // --el-color-primary-dark-2
+  const dark = mix(color, BLACK, 0.2)
+  html.style.setProperty(`${PRE_DARK}-2`, dark)
+}
+// 解析书签数据
+const getFaviconUrl = async (url) => {
+  try {
+    const res = await axios.get('https://api.boycot.top/api/apiDocs?url=' + url);
+    const $ = cheerio.load(res.data);
+    let newUrl = $('link[rel="icon"]').prop('href') ||
+    $('link[rel="shortcut icon"]').prop('href') ||
+    ''
+    return (newUrl.includes('http') || newUrl.includes('https')) ? newUrl : new URL(newUrl, url).href;
+  } catch (error) {
+    console.error('获取favicon失败:', error);
+    return '';
+  }
+};
 // 书签管理
 export const useBookmarkStore = defineStore('bookmark', () => {
   // 解析书签数据
@@ -30,21 +91,6 @@ export const useBookmarkStore = defineStore('bookmark', () => {
       return [];
     }
   }
-  // 解析书签数据
-  const getFaviconUrl = async (url) => {
-    try {
-      const res = await axios.get(url);
-      const $ = cheerio.load(res.data);
-      return (
-        $('link[rel="icon"]').prop('href') ||
-        $('link[rel="shortcut icon"]').prop('href') ||
-        ''
-      );
-    } catch (error) {
-      console.error('获取favicon失败:', error);
-      return '';
-    }
-  };
   const bookmarks = ref([]);
 
   const importBookmarks = (content) => {
@@ -73,7 +119,10 @@ export const useAppStore = defineStore('app', () => {
   const appData = ref({
     icons: [],
     backgroundUrl: '',
-    bgSource: 'bing'
+    bgSource: 'bing',
+    themeColor: '#409eff',
+    copyright: ' © 2025 Powered By boycot',
+    version: '1.0.0'
   });
 
   const addApp = (app) => {
@@ -89,6 +138,13 @@ export const useAppStore = defineStore('app', () => {
   const setBackground = (url) => {
     appData.value.backgroundUrl = url;
   };
+  const setTheme = (themeColor) => {
+    appData.value.themeColor = themeColor;
+    setHtmlStyleProp(themeColor);
+  };
+  const setCopyright = (copyright) => {
+    appData.value.copyright = copyright;
+  }
   const setBgSource = (source) => {
     appData.value.bgSource = source;
   };
@@ -97,7 +153,10 @@ export const useAppStore = defineStore('app', () => {
     addApp,
     updateIcons,
     setBackground,
-    setBgSource
+    setBgSource,
+    getFaviconUrl,
+    setTheme,
+    setCopyright
   };
 }, {
   persist: true // 启用持久化
@@ -128,7 +187,6 @@ export const useHotDataStore = defineStore('hotData', () => {
       throw error;
     }
   };
-  console.log(hotCate, 'hotCate');
   
   return {
     hotData,

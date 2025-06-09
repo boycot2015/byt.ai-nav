@@ -1,15 +1,18 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="新增应用">
+  <el-dialog v-model="dialogVisible" title="应用设置" @open="onOpen" @close="onClose">
     <el-form :model="appForm" label-width="80px">
       <el-form-item label="名称">
-        <el-input v-model="appForm.name"></el-input>
+        <el-input v-model="appForm.title"></el-input>
       </el-form-item>
       <el-form-item label="链接">
-        <el-input v-model="appForm.link"></el-input>
+        <el-input v-model="appForm.url"></el-input>
       </el-form-item>
       <el-form-item label="图标">
-        <el-input v-model="appForm.icon"></el-input>
-        <el-button @click="getIcon">动态获取</el-button>
+        <el-input v-model="appForm.icon">
+          <template #append>
+            <el-button @click="getIcon">动态获取</el-button>
+          </template>
+        </el-input>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -22,21 +25,37 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { useAppStore } from '@/store';
-
-const dialogVisible = ref(false);
-const appForm = ref({
-  name: '',
-  link: '',
-  icon: ''
+import { ElMessage } from 'element-plus';
+const props = defineProps({
+    visible: {
+        type: Boolean,
+        default: false,
+    },
+    rowData: {
+        type: Object,
+        default: () => ({}),
+    },
 });
+const dialogVisible = ref(props.visible || false);
+const appForm = ref({
+  title: '',
+  url: '',
+  icon: '',
+  ...props.rowData
+});
+const emit = defineEmits(['update:visible']);
+watch(props, () => {
+  dialogVisible.value = props.visible;
+})
 const appStore = useAppStore();
 
 const getIcon = async () => {
   try {
-    const response = await fetch(`https://www.google.com/s2/favicons?domain=${appForm.value.link}`);
-    appForm.value.icon = response.url;
+    const response = await appStore.getFaviconUrl(appForm.value.url);
+    appForm.value.icon = response;
+    ElMessage.success('图标获取成功');
   } catch (error) {
     console.error('获取图标失败:', error);
   }
@@ -44,13 +63,25 @@ const getIcon = async () => {
 
 const submitApp = () => {
   appStore.addApp(appForm.value);
+  onClose();
+};
+const onOpen = () => {
+  appForm.value = {
+    name: '',
+    link: '',
+    icon: '',
+    ...props.rowData
+  };
+}
+const onClose = () => {
   dialogVisible.value = false;
   appForm.value = {
     name: '',
     link: '',
     icon: ''
   };
-};
+  emit('update:visible', false);
+}
 </script>
 
 <style scoped>

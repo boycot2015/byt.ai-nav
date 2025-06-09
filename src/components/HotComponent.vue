@@ -9,6 +9,11 @@ const loading = ref(false);
 const hotData = ref([]);
 const fetchHotCate = async () => {
   loading.value = true;
+  if (hotDataStore.hotCate.data.length > 0) {
+    hotData.value = hotDataStore.hotCate.data.slice(0, 6);
+    loading.value = false;
+    return;
+  }
   try {
     const data = await hotDataStore.fetchHotCate();
     hotData.value = data.slice(0, 6);

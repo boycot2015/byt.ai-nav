@@ -2,6 +2,7 @@
   <div class="top-search-bar">
     <el-input
       size="large"
+      ref="searchInput"
       v-model="searchQuery"
       placeholder="输入搜索内容"
       @keyup.enter="performSearch"
@@ -24,15 +25,15 @@
         </el-select>
       </template>
       <template #append>
-        <el-button @click="performSearch">搜索</el-button>
+        <el-button @click="performSearch" :icon="Search"></el-button>
       </template>
     </el-input>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
+import { ref, onMounted } from 'vue';
+import { Search } from '@element-plus/icons-vue';
 const selectedEngine = ref('bing');
 const searchQuery = ref('');
 
@@ -74,7 +75,7 @@ const searchEngines = [
     url: 'https://search.yahoo.com/search?p={query}',
   },
 ];
-
+const searchInput = ref(null);
 const performSearch = () => {
   const engine = searchEngines.find(e => e.value === selectedEngine.value);
   if (engine) {
@@ -82,6 +83,9 @@ const performSearch = () => {
     window.open(searchUrl, '_blank');
   }
 };
+onMounted(() => {
+  searchInput.value.focus();
+})
 </script>
 
 <style scoped>

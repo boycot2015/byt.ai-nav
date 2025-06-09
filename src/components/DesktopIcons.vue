@@ -28,25 +28,20 @@
   </el-scrollbar>
   <el-empty image-size="36" class="text-[#333]" description="请新增或导入书签" v-else></el-empty>
   <context-menu name="icons-menu">
-    <context-menu-submenu :label="'查看'">
-      <context-menu-item disabled>图标</context-menu-item>
-      <context-menu-item>列表</context-menu-item>
-      <context-menu-item>详细信息</context-menu-item>
-    </context-menu-submenu>
-    <context-menu-item @click="refresh" :divider="true">刷新</context-menu-item>
+    <context-menu-item @itemClickHandle="onAdd()">新增</context-menu-item>
+    <context-menu-item @itemClickHandle="onAdd">编辑</context-menu-item>
     <context-menu-item @itemClickHandle="onDelete" :divider="true">删除</context-menu-item>
-    <context-menu-submenu :label="'新建'" divider>
-      <context-menu-item>新建文件</context-menu-item>
-      <context-menu-item>新建文件夹</context-menu-item>
-      <context-menu-item>快捷方式</context-menu-item>
-    </context-menu-submenu>
     <context-menu-item :disabled="true">属性</context-menu-item>
   </context-menu>
   <FolderDialog
       :visible="folderDialogVisible"
       :folder-name="currentFolderName"
-      :folder-data="currentFolderData"
+      :folder-data="currentData"
     />
+  <AddAppDialog
+    :visible="addAppDialogVisible"
+    :row-data="rowData"
+  />
 </div>
 </template>
 
@@ -56,6 +51,7 @@ import draggable from 'vuedraggable';
 import { useAppStore } from '@/store';
 import { ElMessage } from 'element-plus';
 import FolderDialog from "./FolderDialog.vue";
+import AddAppDialog from "./AddAppDialog.vue";
 
 const emitContext = inject('emitContext')
 const appStore = useAppStore();
@@ -63,7 +59,9 @@ const icons = ref(appStore.appData.icons);
 const sourceIcons = computed(() => appStore.appData.icons);
 const currentFolderName = ref('');
 const folderDialogVisible = ref(false);
-const currentFolderData = ref([]);
+const addAppDialogVisible = ref(false);
+const currentData = ref([]);
+const rowData = ref({});
 watch(sourceIcons, () => {
   icons.value = appStore.appData.icons;
 });
@@ -71,6 +69,10 @@ watch(sourceIcons, () => {
 const onDragEnd = () => {
   appStore.updateIcons(icons.value);
 };
+const onAdd = (item) => {
+  addAppDialogVisible.value = true;
+  if (item) rowData.value = item || {};
+}
 const onDelete = (item) => {
   appStore.updateIcons(sourceIcons.value.filter(icon => icon.id !== item.id));
   ElMessage.success(`删除成功`);
@@ -86,7 +88,7 @@ function openContextMenu (e, item) {
 const onAppDialogOpen = (item) => {
   // 实现打开文件夹对话框的逻辑
   currentFolderName.value = item.title;
-  currentFolderData.value = item.links;
+  currentData.value = item.links;
   folderDialogVisible.value = true;
 }
 defineExpose({

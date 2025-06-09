@@ -13,6 +13,9 @@
         <DesktopIcons class="my-[40px]">
           <BookmarkImport />
         </DesktopIcons>
+        <footer class="drap-shadow text-[#fff] text-center">
+          {{ appStore.appData.copyright }}
+        </footer>
     </div>
     <div :class="`bg transition fixed top-[0px] left-[0px] h-full w-full z-9 ${isBgChange && 'active'}`" :style="{background: `url(${backgroundUrl}) center/cover no-repeat fixed`}"></div>
     <AddAppDialog />

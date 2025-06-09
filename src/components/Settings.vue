@@ -25,7 +25,16 @@
             </el-scrollbar>
           </div>
         </el-tab-pane>
-        <el-tab-pane name="base" label="基础设置"></el-tab-pane>
+        <el-tab-pane name="base" label="基础设置">
+          <el-form label-width="100px">
+            <el-form-item class="flex items-center" label="主题色：">
+                <el-color-picker class="flex-3" v-model="themeColor" @change="appStore.setTheme"></el-color-picker>
+            </el-form-item>
+            <el-form-item class="flex items-center" label="版权：">
+                <el-input class="flex-3" v-model="copyright" @input="appStore.setCopyright"></el-input>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
       </el-tabs>
       <!-- <template #footer>
           <el-button type="primary" @click="dialogVisible = false">确定</el-button>
@@ -44,6 +53,8 @@ const dialogVisible = ref(false);
 const bgLoading = ref(false);
 const appStore = useAppStore();
 const selectedSource = ref(appStore.appData?.bgSource || 'bing');
+const themeColor = ref(appStore.appData?.themeColor || '#ff9900');
+const copyright = ref(appStore.appData?.copyright || '');
 const wallpapers = ref([]);
 const activeTab = ref('bg');
 const page = ref(1);
@@ -93,6 +104,7 @@ onMounted(() => {
   timer.value = setInterval(() => {
     randomBg();
   }, 30000);
+  appStore.setTheme(themeColor.value);
 });
 onBeforeUnmount(() => {
   clearInterval(timer.value);

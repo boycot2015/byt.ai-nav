@@ -46,7 +46,6 @@ const props = defineProps({
 const show = ref(props.visible);
 const emit = defineEmits(["update:visible"]);
 watch(props, () => {
-    console.log("visible changed", props.visible);
     show.value = props.visible;
 })
 const onClose = () => {
