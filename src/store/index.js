@@ -165,7 +165,7 @@ export const useAppStore = defineStore('app', () => {
 // 热点数据管理
 export const useHotDataStore = defineStore('hotData', () => {
   const hotData = ref([]);
-  const hotCate = ref([]);
+  const hotCate = ref({});
 
   const fetchHotData = async ({ page = 1, cate = 'weibo' } = {}) => {
     try {

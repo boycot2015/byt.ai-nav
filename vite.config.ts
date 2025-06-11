@@ -9,5 +9,10 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src')
     }
+  },
+  envPrefix: 'VITE_',
+  server: {
+    port: 8008,
+    open: true
   }
 })

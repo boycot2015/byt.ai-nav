@@ -4,9 +4,9 @@
     :title="folderName"
     @close="onClose"
   >
-    <div v-if="folderData.length > 0" class="folder-content min-w-[280px] max-w-[800px]">
+    <div v-if="folderData.length > 0" class="folder-content min-w-[280px] max-w-[100%]">
       <el-row>
-        <el-col :span="24" :sm="6" :lg="4" v-for="(element, index) in folderData" :key="index" class="folder-item">
+        <el-col :span="24" :sm="6" :lg="4" :xl="3" v-for="(element, index) in folderData" :key="index" class="folder-item">
           <div class="icon-item border-b pb-2 md:pb-0 md:border-0 md:text-center mx-1 text-[#333] hover:text-[var(--el-color-primary)]" @contextmenu="(e) => $parent.openContextMenu(e, {...element, name: 'icons-menu'})" v-contextmenu="{...element, name: 'icons-menu'}">
           <div v-if="!element.url" class="cursor-pointer drop-shadow flex md:flex-col items-center md:justify-center" @click="$parent.onAppDialogOpen(element)">
             <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"><!-- Icon from Lets Icons by Leonid Tsvetkov - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" fill-rule="evenodd" d="M7 7.2c0-1.12 0-1.68.218-2.108a2 2 0 0 1 .874-.874C8.52 4 9.08 4 10.2 4h1.301c.551 0 .827 0 1.082.069a2 2 0 0 1 .631.295c.216.153.393.364.745.787L15.5 7h2.3c1.12 0 1.68 0 2.108.218a2 2 0 0 1 .874.874C21 8.52 21 9.08 21 10.2v2.6c0 1.12 0 1.68-.218 2.108a2 2 0 0 1-.874.874C19.48 16 18.92 16 17.8 16H8a1 1 0 0 1-1-1zm-2 .82c-.392.023-.67.077-.908.198a2 2 0 0 0-.874.874C3 9.52 3 10.08 3 11.2v2.4c0 2.24 0 3.36.436 4.216a4 4 0 0 0 1.748 1.748C6.04 20 7.16 20 9.4 20h4.4c1.12 0 1.68 0 2.108-.218a2 2 0 0 0 .874-.874c.121-.238.175-.516.199-.908H8a3 3 0 0 1-3-3z" clip-rule="evenodd"/></svg>

@@ -26,7 +26,7 @@
       </template>
     </draggable>
   </el-scrollbar>
-  <el-empty image-size="36" class="text-[#333]" description="请新增或导入书签" v-else></el-empty>
+  <el-empty :image-size="36" class="text-[#333]" description="请新增或导入书签" v-else></el-empty>
   <context-menu name="icons-menu">
     <context-menu-item @itemClickHandle="onAdd()">新增</context-menu-item>
     <context-menu-item @itemClickHandle="onAdd">编辑</context-menu-item>
