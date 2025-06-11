@@ -1,11 +1,9 @@
 <template>
-  <Suspense>
-    <div class="weather-component drop-shadow text-[#fff] text-[20px] sm:text-[32px]">
-        <span>{{ city }}</span>
-        <div v-html="weatherIcon" alt="Weather Icon"></div>
-        <span>{{ temperature }}°C</span>
-    </div>
-  </Suspense>
+  <div class="weather-component drop-shadow text-[#fff] text-[20px] sm:text-[32px]">
+      <span>{{ city }}</span>
+      <div v-html="weatherIcon" alt="Weather Icon"></div>
+      <span>{{ temperature }}°C</span>
+  </div>
 </template>
 
 <script setup>

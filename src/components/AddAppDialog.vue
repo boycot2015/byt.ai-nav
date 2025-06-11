@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="应用设置" @open="onOpen" @close="onClose">
+  <el-dialog append-to-body v-model="dialogVisible" title="应用设置" @open="onOpen" @close="onClose">
     <el-form :model="appForm" label-width="80px">
       <el-form-item label="名称">
         <el-input v-model="appForm.title"></el-input>
@@ -17,7 +17,7 @@
     </el-form>
     <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button @click.stop="onClose">取消</el-button>
         <el-button type="primary" @click="submitApp">确定</el-button>
       </span>
     </template>
@@ -38,14 +38,14 @@ const props = defineProps({
         default: () => ({}),
     },
 });
-const dialogVisible = ref(props.visible || false);
+const dialogVisible = ref(props.visible);
 const appForm = ref({
   title: '',
   url: '',
   icon: '',
   ...props.rowData
 });
-const emit = defineEmits(['update:visible']);
+const emit = defineEmits(["update:visible"]);
 watch(props, () => {
   dialogVisible.value = props.visible;
 })
@@ -75,12 +75,12 @@ const onOpen = () => {
 }
 const onClose = () => {
   dialogVisible.value = false;
+  emit("update:visible", false);
   appForm.value = {
     name: '',
     link: '',
     icon: ''
   };
-  emit('update:visible', false);
 }
 </script>
 

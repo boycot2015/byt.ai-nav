@@ -1,6 +1,7 @@
 <template>
   <el-dialog
     v-model="show"
+    append-to-body
     :title="folderName"
     @close="onClose"
   >

@@ -3,6 +3,10 @@
 @tailwind utilities;
 /* would like to ignore ./src/pages/og-image/[slug].png.ts */
 @import "tailwindcss";
+:root {
+    --el-bg-color: rgba(255, 255, 255, 0.9);
+    --el-fill-color-blank: rgba(255, 255, 255, 0.85);
+}
 /* config for tailwindcss-typography plugin */
 * {
     margin: 0;
@@ -27,7 +31,17 @@
 }
 .el-card__header {
     padding: 10px 16px;
-    border-bottom: 1px solid #e8e8e8;
+    border-bottom: 1px dashed rgba(0, 0, 0, 0.6);
+}
+.el-card {
+    border: none;
+}
+.el-loading-mask,.el-dialog__body,
+.el-card, .el-card__body {
+    --el-card-bg-color: rgba(255, 255, 255, 0.6);
+    --tw-backdrop-blur: blur(var(--blur-md));
+    -webkit-backdrop-filter: var(--tw-backdrop-blur,) var(--tw-backdrop-brightness,) var(--tw-backdrop-contrast,) var(--tw-backdrop-grayscale,) var(--tw-backdrop-hue-rotate,) var(--tw-backdrop-invert,) var(--tw-backdrop-opacity,) var(--tw-backdrop-saturate,) var(--tw-backdrop-sepia,);
+    backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
 }
 .el-card__body {
     padding: 10px;
@@ -40,7 +54,7 @@
     }
 }
 .v-contextmenu {
-    z-index: 100;
+    z-index: 10000;
     border-radius: 5px;
     overflow: hidden;
 }

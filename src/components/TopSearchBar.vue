@@ -2,6 +2,7 @@
   <div class="top-search-bar">
     <el-input
       size="large"
+      class="!backdrop-blur-md"
       ref="searchInput"
       v-model="searchQuery"
       placeholder="输入搜索内容"

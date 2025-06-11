@@ -1,5 +1,5 @@
 <template>
-<div class="min-h-[50px] bg-[rgba(255,255,255,.6)] rounded text-center">
+<div class="min-h-[50px] bg-[rgba(255,255,255,.6)] backdrop-blur-md rounded text-center">
   <slot></slot>
   <el-scrollbar v-if="icons && icons.length > 0" class="desktop-icons flex" height="100%">
     <draggable
@@ -12,7 +12,7 @@
       item-key="id"
     >
       <template #item="{ element }">
-        <div class="icon-item text-center mx-1 text-[#333] hover:text-[var(--el-color-primary)]" @contextmenu="(e) => openContextMenu(e, {...element, name: 'icons-menu'})" v-contextmenu="{...element, name: 'icons-menu'}">
+        <div class="icon-item text-center mx-1 text-[#333] hover:text-[var(--el-color-primary)]" @contextmenu.prevent="(e) => openContextMenu(e, {...element, name: 'icons-menu'})" v-contextmenu="{...element, name: 'icons-menu'}">
           <div v-if="!element.url" class="cursor-pointer drop-shadow flex flex-col items-center justify-center" @click="onAppDialogOpen(element)">
             <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24"><!-- Icon from Lets Icons by Leonid Tsvetkov - https://creativecommons.org/licenses/by/4.0/ --><path fill="currentColor" fill-rule="evenodd" d="M7 7.2c0-1.12 0-1.68.218-2.108a2 2 0 0 1 .874-.874C8.52 4 9.08 4 10.2 4h1.301c.551 0 .827 0 1.082.069a2 2 0 0 1 .631.295c.216.153.393.364.745.787L15.5 7h2.3c1.12 0 1.68 0 2.108.218a2 2 0 0 1 .874.874C21 8.52 21 9.08 21 10.2v2.6c0 1.12 0 1.68-.218 2.108a2 2 0 0 1-.874.874C19.48 16 18.92 16 17.8 16H8a1 1 0 0 1-1-1zm-2 .82c-.392.023-.67.077-.908.198a2 2 0 0 0-.874.874C3 9.52 3 10.08 3 11.2v2.4c0 2.24 0 3.36.436 4.216a4 4 0 0 0 1.748 1.748C6.04 20 7.16 20 9.4 20h4.4c1.12 0 1.68 0 2.108-.218a2 2 0 0 0 .874-.874c.121-.238.175-.516.199-.908H8a3 3 0 0 1-3-3z" clip-rule="evenodd"/></svg>
             <span :title="element.title">{{ element.title }}</span>
@@ -27,14 +27,14 @@
     </draggable>
   </el-scrollbar>
   <el-empty :image-size="36" class="text-[#333]" description="请新增或导入书签" v-else></el-empty>
-  <context-menu name="icons-menu">
-    <context-menu-item @itemClickHandle="onAdd()">新增</context-menu-item>
+  <context-menu name="icons-menu" class="z-9999">
+    <context-menu-item @itemClickHandle="() => onAdd()">新增</context-menu-item>
     <context-menu-item @itemClickHandle="onAdd">编辑</context-menu-item>
     <context-menu-item @itemClickHandle="onDelete" :divider="true">删除</context-menu-item>
     <context-menu-item :disabled="true">属性</context-menu-item>
   </context-menu>
   <FolderDialog
-      :visible="folderDialogVisible"
+      v-model="folderDialogVisible"
       :folder-name="currentFolderName"
       :folder-data="currentData"
     />
@@ -73,8 +73,19 @@ const onAdd = (item) => {
   addAppDialogVisible.value = true;
   if (item) rowData.value = item || {};
 }
+const covert = (arr) => {
+  return arr.map(el => {
+    if (el.links && el.links.length > 0) {
+      el.links = covert(el.links);
+    }
+    return el;
+  }).filter(icon => icon => icon.id !== item.id);
+}
 const onDelete = (item) => {
-  appStore.updateIcons(sourceIcons.value.filter(icon => icon.id !== item.id));
+  let has = sourceIcons.value.find(icon => icon.id == item.id)
+  has && appStore.updateIcons(sourceIcons.value.filter(icon => icon.id !== item.id));
+  !has && appStore.updateIcons(covert(sourceIcons.value))
+  if (item.id) currentData.value = currentData.value?.filter(link => link.id !== item.id);
   ElMessage.success(`删除成功`);
 }
 const refresh = () => {

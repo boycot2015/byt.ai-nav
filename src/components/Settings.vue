@@ -5,20 +5,25 @@
       <el-tabs v-model="activeTab" class="min-w-[320px]">
         <el-tab-pane name="bg" label="背景设置">
           <div class="flex flex-col">
-            <div class="mb-[12px] text-right items-center self-end flex">
+            <div class="mb-[12px] text-right items-center xl:self-end flex">
               <span>来源：</span>
               <el-radio-group size="small" v-model="selectedSource">
+                <el-radio-button value="birdpaper">小鸟壁纸</el-radio-button>
                 <el-radio-button value="bing">必应</el-radio-button>
                 <el-radio-button value="360">360</el-radio-button>
-                <el-radio-button value="birdpaper">Birdpaper</el-radio-button>
               </el-radio-group>
             </div>
             <el-scrollbar style="height: 40vh" v-loading="bgLoading">
-              <div :infinite-scroll-immediate="false" v-infinite-scroll="() => fetchWallpapers(true)">
+              <div class="rounded overflow-hidden" :infinite-scroll-immediate="false" v-infinite-scroll="() => fetchWallpapers(true)">
                 <el-row :gutter="0">
                   <el-col v-for="wallpaper in wallpapers
           " :key="wallpaper.url" :span="12" :md="8" :lg="6" :xl="3">
-                    <el-image :src="wallpaper.url" fit="cover" @click="(e) => setBackground(wallpaper.url, e)" class="wallpaper-preview"></el-image>
+          <!-- :preview-src-list="wallpapers.map(el => el.url)"  show-progress -->
+                    <el-image lazy :src="wallpaper.url" fit="cover" @click="(e) => setBackground(wallpaper.url, e)" class="wallpaper-preview">
+                      <template #placeholder>
+                        <el-empty description="图片加载中..."></el-empty>
+                      </template>
+                    </el-image>
                   </el-col>
                 </el-row>
               </div>
@@ -52,7 +57,7 @@ const timer = ref(null);
 const dialogVisible = ref(false);
 const bgLoading = ref(false);
 const appStore = useAppStore();
-const selectedSource = ref(appStore.appData?.bgSource || 'bing');
+const selectedSource = ref(appStore.appData?.bgSource || 'birdpaper');
 const themeColor = ref(appStore.appData?.themeColor || '#ff9900');
 const copyright = ref(appStore.appData?.copyright || '');
 const wallpapers = ref([]);

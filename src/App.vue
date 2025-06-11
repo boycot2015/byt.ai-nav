@@ -13,11 +13,11 @@
         <DesktopIcons class="my-[40px]">
           <BookmarkImport />
         </DesktopIcons>
-        <footer class="drap-shadow text-[#fff] text-center">
-          {{ appStore.appData.copyright }}
-        </footer>
     </div>
-    <div :class="`bg transition fixed top-[0px] left-[0px] h-full w-full z-9 ${isBgChange && 'active'}`" :style="{background: `url(${backgroundUrl}) center/cover no-repeat fixed`}"></div>
+    <footer class="drap-shadow relative z-10 text-[#fff] text-center my-2">
+      {{ appStore.appData.copyright }}
+    </footer>
+    <div :class="`bg transition fixed top-[0px] left-[0px] h-full w-full z-1 ${isBgChange && 'active'}`" :style="{background: `url(${backgroundUrl}) center/cover no-repeat fixed`}"></div>
     <AddAppDialog />
     <context-menu name="setting-menu">
       <context-menu-item @itemClickHandle="openSetting"><div class="flex items-center"><el-icon class="mr-2"><Setting /></el-icon>设置</div></context-menu-item>

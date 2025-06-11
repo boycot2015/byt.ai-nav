@@ -1,13 +1,13 @@
 <template>
   <div class="hot-card">
-    <el-card size="small">
+    <el-card size="small" v-loading="loading" >
       <template #header>
         <div class="card-header">
           <span>{{title}}</span>
           <el-icon class="cursor-pointer" @click="refreshData"><Refresh /></el-icon>
         </div>
       </template>
-      <div v-loading="loading" class="min-h-[200px]">
+      <div class="min-h-[200px]">
         <el-scrollbar height="200px" v-if="hotData[0]">
           <el-timeline class="pl-[5px]" v-if="hotData[0] && hotData[0].time">
             <el-timeline-item

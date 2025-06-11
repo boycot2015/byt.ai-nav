@@ -99,7 +99,14 @@ export const useBookmarkStore = defineStore('bookmark', () => {
     try {
       const parsed = parseHtml(content);
       bookmarks.value = parsed;
-      useAppStore().updateIcons(bookmarks.value?.map(el => ({ ...el, id: Date.now() })))
+      const covert = (el, index) => {
+        return {
+          ...el,
+          id: Date.now() + index,
+          links: el.links?.map((item, idx) => covert(item, index + '-' + idx)) || []
+        }
+      }
+      useAppStore().updateIcons(bookmarks.value?.map(covert))
     } catch (error) {
       console.error('解析书签失败:', error);
     }

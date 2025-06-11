@@ -22,7 +22,7 @@ export function getCityByGeolocation() {
     return new Promise((resolve, reject) => {
         // 替换为你自己的高德地图 API Key
         const amapKey = import.meta.env.VITE_AMAP_KEY;
-        console.info('amapKey', amapKey)
+        // console.info('amapKey', amapKey)
         const geocoderUrl = `https://restapi.amap.com/v3/ip?key=${amapKey}`;
         fetch(geocoderUrl)
             .then(response => response.json())
