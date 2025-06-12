@@ -6,6 +6,7 @@
 :root {
     --el-bg-color: rgba(255, 255, 255, 0.9);
     --el-fill-color-blank: rgba(255, 255, 255, 0.85);
+    --el-text-color-regular: #333;
 }
 /* config for tailwindcss-typography plugin */
 * {

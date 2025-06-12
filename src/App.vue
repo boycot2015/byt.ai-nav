@@ -1,6 +1,6 @@
 <template>
-  <div class="main relative min-w-[320px]">
-    <div class="container relative z-10" @contextmenu.prevent="(e) => emitContext(e, { name: 'setting-menu' })" v-contextmenu="{name: 'setting-menu'}">
+  <div class="main relative min-w-[320px]" @contextmenu.prevent="(e) => emitContext(e, { name: 'setting-menu' })" v-contextmenu="{name: 'setting-menu'}">
+    <div class="container relative z-10">
         <Settings class="fixed z-999 bottom-[70px] right-[5%]" ref="settingRef" @change="onSettingChange" />
         <div class="max-w-[1000px] m-auto mb-[30px]">
           <div class="flex items-center">

@@ -1,6 +1,6 @@
 <template>
   <el-dialog append-to-body v-model="dialogVisible" title="应用设置" @open="onOpen" @close="onClose">
-    <el-form :model="appForm" label-width="80px">
+    <el-form :model="appForm" class="min-w-[280px]" label-width="80px">
       <el-form-item label="名称">
         <el-input v-model="appForm.title"></el-input>
       </el-form-item>
@@ -10,7 +10,7 @@
       <el-form-item label="图标">
         <el-input v-model="appForm.icon">
           <template #append>
-            <el-button @click="getIcon">动态获取</el-button>
+            <el-button :disabled="!appForm.url" @click="getIcon">动态获取</el-button>
           </template>
         </el-input>
       </el-form-item>
@@ -45,7 +45,7 @@ const appForm = ref({
   icon: '',
   ...props.rowData
 });
-const emit = defineEmits(["update:visible"]);
+const emit = defineEmits(["update:modelValue"]);
 watch(props, () => {
   dialogVisible.value = props.visible;
 })
@@ -75,7 +75,7 @@ const onOpen = () => {
 }
 const onClose = () => {
   dialogVisible.value = false;
-  emit("update:visible", false);
+  emit("update:modelValue", false);
   appForm.value = {
     name: '',
     link: '',

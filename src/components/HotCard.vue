@@ -20,7 +20,16 @@
             </el-timeline-item>
           </el-timeline>
           <div v-else>
-          <el-link class="my-1" v-for="(item, index) in hotData" :key="index" :href="item.url" target="_blank"><span class="line-clamp-2">{{index+1}}、{{ item.title }}</span></el-link>
+            <div v-for="(item, index) in hotData" :key="index">
+              <div class="my-1 w-full flex justify-between w-full">
+                <el-link :href="item.url" target="_blank">
+                  <el-tooltip :content="item.title" popper-class="max-w-[200px]" placement="right">
+                    <span class="line-clamp-2 flex-1">{{index+1}}、{{ item.title }}</span>
+                  </el-tooltip>
+                </el-link>
+                <span class="desc" v-if="item.desc && item.url.includes('xueqiu')">{{ item.desc }}</span>
+              </div>
+              </div>
           </div>
         </el-scrollbar>
         <el-empty :image-size="70" v-else-if="!loading"></el-empty>
