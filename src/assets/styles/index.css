@@ -59,3 +59,27 @@
     border-radius: 5px;
     overflow: hidden;
 }
+.el-collapse {
+    border-top: 0;
+    border-bottom: 0;
+    --el-collapse-content-bg-color: transparent!important;
+    --el-collapse-header-bg-color: transparent!important;
+}
+.el-collapse-item__content {
+    padding: 16px 0 0;
+    border-bottom: 0;
+}
+.el-collapse-item__wrap {
+    border-bottom: 0;
+}
+.el-collapse-item {
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+.el-collapse-item__header {
+    border-radius: 4px;
+    padding: 0 16px;
+    border-bottom: 0;
+    color: #fff;
+}

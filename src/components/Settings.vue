@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button type="primary" @click="openBackgroundDialog" :icon="Setting">设置</el-button>
+    <el-button type="primary" size="small" @click="openBackgroundDialog" :icon="Setting">设置</el-button>
     <el-dialog v-model="dialogVisible" width="50vw" title="设置" append-to-body>
       <el-tabs v-model="activeTab" class="min-w-[320px]">
         <el-tab-pane name="bg" label="背景设置">

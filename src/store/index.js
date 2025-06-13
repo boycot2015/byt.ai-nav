@@ -49,15 +49,15 @@ const setHtmlStyleProp = (color) => {
   const dark = mix(color, BLACK, 0.2)
   html.style.setProperty(`${PRE_DARK}-2`, dark)
 }
-// 解析书签数据
+// 获取图标数据
 const getFaviconUrl = async (url) => {
   try {
     const res = await axios.get('https://api.boycot.top/api/apiDocs?url=' + url);
-    const $ = cheerio.load(res.data);
+    const $ = cheerio.load(res.data?.data || '<html></html>');
     let newUrl = $('link[rel="icon"]').prop('href') ||
     $('link[rel="shortcut icon"]').prop('href') ||
-    ''
-    return (newUrl.includes('http') || newUrl.includes('https')) ? newUrl : new URL(newUrl, url).href;
+    '';
+    return (newUrl.includes('http') || newUrl.includes('https')) ? newUrl : newUrl ? (new URL(newUrl, url).protocol + '//' + new URL(newUrl, url).host + (newUrl.includes('/') ? newUrl : '/' + newUrl)) : '';
   } catch (error) {
     console.error('获取favicon失败:', error);
     return '';
