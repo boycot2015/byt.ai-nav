@@ -9,7 +9,7 @@
       @keyup.enter="performSearch"
     >
       <template #prepend>
-        <el-select size="large" class="flex-3 w-[80px]" v-model="selectedEngine" placeholder="选择搜索引擎">
+        <el-select size="large" class="flex-3 w-[85px]" v-model="selectedEngine" placeholder="选择搜索引擎">
           <el-option
             v-for="engine in searchEngines"
             :key="engine.value"

@@ -56,6 +56,8 @@ const getFaviconUrl = async (url) => {
     const $ = cheerio.load(res.data?.data || '<html></html>');
     let newUrl = $('link[rel="icon"]').prop('href') ||
     $('link[rel="shortcut icon"]').prop('href') ||
+    $('link[rel="icon shortcut"]').prop('href') ||
+    $('link[rel="apple-touch-icon"]').prop('href') ||
     '';
     return (newUrl.includes('http') || newUrl.includes('https')) ? newUrl : newUrl ? (new URL(newUrl, url).protocol + '//' + new URL(newUrl, url).host + (newUrl.includes('/') ? newUrl : '/' + newUrl)) : '';
   } catch (error) {
@@ -126,7 +128,7 @@ export const useAppStore = defineStore('app', () => {
   const appData = ref({
     icons: [],
     backgroundUrl: '',
-    bgSource: 'bing',
+    bgSource: 'birdpaper',
     themeColor: '#409eff',
     copyright: ' © 2025 Powered By boycot',
     version: '1.0.0'

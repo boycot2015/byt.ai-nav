@@ -1,8 +1,8 @@
 <template>
   <div class="main relative min-w-[320px]" @contextmenu.prevent="(e) => emitContext(e, { name: 'setting-menu' })" v-contextmenu="{name: 'setting-menu'}">
-    <div class="top-bar drap-shadow sticky w-[100%] text-[#fff] top-[0px] left-[0px] z-1000 backdrop-blur-lg flex justify-between leading-[36px] px-[20px]">
+    <div class="top-bar drap-shadow sticky w-[100%] text-[#fff] top-[0px] left-[0px] z-1000 backdrop-blur-lg flex justify-between px-[20px] py-[5px]">
       <div class="logo">ai导航</div>
-      <Settings class=" z-999 top-[50px] right-[5%]" ref="settingRef" @change="onSettingChange" />
+      <Settings class="z-999" ref="settingRef" @change="onSettingChange" />
     </div>
     <div class="container relative z-10 px-[20px] xl:px-0 min-h-[calc(100vh-100px)]">
         <div class="max-w-[1000px] m-auto mb-[30px]">

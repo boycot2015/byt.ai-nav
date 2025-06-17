@@ -5,6 +5,7 @@
       <el-tabs v-model="activeTab" class="min-w-[320px]">
         <el-tab-pane name="bg" label="背景设置">
           <div class="flex flex-col">
+            <el-button type="danger">重置</el-button>
             <div class="mb-[12px] text-right items-center xl:self-end flex">
               <span>来源：</span>
               <el-radio-group size="small" v-model="selectedSource">
@@ -14,7 +15,7 @@
               </el-radio-group>
             </div>
             <el-scrollbar style="height: 40vh" v-loading="bgLoading">
-              <div class="rounded overflow-hidden" :infinite-scroll-immediate="false" v-infinite-scroll="() => fetchWallpapers(true)">
+              <div class="rounded" :infinite-scroll-immediate="false" v-infinite-scroll="fetchWallpapers">
                 <el-row :gutter="0">
                   <el-col v-for="wallpaper in wallpapers
           " :key="wallpaper.url" :span="12" :md="8" :lg="6" :xl="3">
@@ -32,6 +33,7 @@
         </el-tab-pane>
         <el-tab-pane name="base" label="基础设置">
           <el-form label-width="100px">
+            <el-button type="danger">重置</el-button>
             <el-form-item class="flex items-center" label="主题色：">
                 <el-color-picker class="flex-3" v-model="themeColor" @change="appStore.setTheme"></el-color-picker>
             </el-form-item>
@@ -68,7 +70,7 @@ const openBackgroundDialog = () => {
 };
 const emit = defineEmits(['change']);
  
-const fetchWallpapers = async (pageChange = false) => {
+const fetchWallpapers = async (pageChange = true) => {
   bgLoading.value = true;
   page.value = pageChange ? page.value + 1 : 1;
   try {
@@ -76,7 +78,6 @@ const fetchWallpapers = async (pageChange = false) => {
     let wallpaper = await response.json();
     wallpapers.value = page.value > 1 ? [...wallpapers.value, ...wallpaper.data?.list] : wallpaper.data?.list || [];
     bgLoading.value = false;
-    randomBg();
   } catch (error) {
     bgLoading.value = false;
     console.error('获取壁纸失败:', error);
@@ -92,18 +93,21 @@ const setBackground = (url, e) => {
     message: '设置成功',
     type: 'success',
   });
-  if(e) timer.value = setInterval(() => {
+  if(e) {
+    clearInterval(timer.value);
+    timer.value = setInterval(() => {
     randomBg();
   }, 30000);
+  }
 };
 
 const randomBg = () => {
   setBackground(wallpapers.value[Math.floor(Math.random() * wallpapers.value.length)].url);
 }
-fetchWallpapers();
+fetchWallpapers(false);
 watch(selectedSource, () => {
   appStore.setBgSource(selectedSource.value);
-  fetchWallpapers();
+  fetchWallpapers(false);
 });
 onMounted(() => {
   timer.value = setInterval(() => {
