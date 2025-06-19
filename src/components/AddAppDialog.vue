@@ -1,6 +1,6 @@
 <template>
   <el-dialog append-to-body v-model="dialogVisible" width="380px" :title="`${appText}设置`" @open="onOpen" @close="onClose">
-    <el-form ref="appFormRef" :model="appForm" class="min-w-[280px]" label-width="120px">
+    <el-form ref="appFormRef" :model="appForm" class="min-w-[280px]" label-width="100px">
       <el-form-item prop="title" :label="`${appText}名称:`" required :rules="[{ required: true, message: appText + '不能为空' }]">
         <el-input v-model="appForm.title" :placeholder="`请输入${appText}名称`"></el-input>
       </el-form-item>
@@ -39,11 +39,15 @@ const props = defineProps({
         type: Object,
         default: () => ({}),
     },
+    title: {
+        type: String,
+        default: '应用',
+    },
 });
 const dialogVisible = ref(props.visible);
 const appFormRef = ref(null);
-const showIcons = computed(() => !props.rowData.id || (props.rowData?.links && !props.rowData?.links.length));
-const appText = computed(() => props.rowData.id && (props.rowData?.links && props.rowData?.links.length) ? '文件夹' : '应用');
+const showIcons = computed(() => (!props.rowData.id && !props.title) || (props.rowData?.links && !props.rowData?.links.length));
+const appText = computed(() => props.rowData.id && (props.rowData?.links && props.rowData?.links.length) ? '文件夹' : props.title || '应用');
 const appForm = ref({
   id: '',
   title: '',

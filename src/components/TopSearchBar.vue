@@ -4,6 +4,7 @@
       size="large"
       class="!backdrop-blur-md"
       ref="searchInput"
+      clearable
       v-model="searchQuery"
       placeholder="输入搜索内容"
       @keyup.enter="performSearch"

@@ -36,7 +36,9 @@
     <context-menu-item @itemClickHandle="onDelete" :divider="true">删除</context-menu-item>
   </context-menu>
     <context-menu name="icons-menu-add" class="z-9999">
-    <context-menu-item @itemClickHandle="() => onAdd()">新增</context-menu-item>
+    <context-menu-item @itemClickHandle="() => onAdd()"><div class="flex items-center"><el-icon class="mr-2"><Plus /></el-icon>新增应用</div></context-menu-item>
+    <context-menu-item :divider="true" @itemClickHandle="() => onAdd({typeName: '文件夹'})"><div class="flex items-center"><el-icon class="mr-2"><Plus /></el-icon>新增文件夹</div></context-menu-item>
+    <context-menu-item @itemClickHandle="() => onDelete()"><div class="flex items-center"><el-icon class="mr-2 text-[#f56c6c]"><DeleteIcon /></el-icon>清空书签</div></context-menu-item>
   </context-menu>
   <FolderDialog
       v-model="folderDialogVisible"
@@ -46,6 +48,7 @@
   <AddAppDialog
     v-model="addAppDialogVisible"
     :row-data="rowData"
+    :title="rowData.typeName || '应用'"
     @confirm="onUpdateIcons"
   />
 </div>
@@ -55,9 +58,10 @@
 import { ref, watch, computed, inject, nextTick } from 'vue';
 import draggable from 'vuedraggable';
 import { useAppStore } from '@/store';
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 import FolderDialog from "./FolderDialog.vue";
 import AddAppDialog from "./AddAppDialog.vue";
+import { Plus, Delete as DeleteIcon } from '@element-plus/icons-vue';
 
 const emitContext = inject('emitContext')
 const appStore = useAppStore();
@@ -80,6 +84,16 @@ const onAdd = (item) => {
   rowData.value = item || {};
 }
 const onDelete = (item) => {
+  if (!item) {
+    ElMessageBox.confirm('确定要删除所有书签', '温馨提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }).then(() => {
+      appStore.updateIcons([]);
+    }).catch(() => {});
+    return;
+  }
   const covert = (arr) => {
     return arr.map(el => {
       if (el.links && el.links.length > 0) {
