@@ -1,5 +1,5 @@
 <template>
-  <div class="time-component drop-shadow sm:text-center text-[#fff] text-[36px] sm:text-[48px] md:text-[64px]">
+  <div class="time-component drop-shadow sm:text-center text-[#fff] text-[24px] sm:text-[48px] md:text-[64px]">
     {{ formattedTime }}
   </div>
 </template>

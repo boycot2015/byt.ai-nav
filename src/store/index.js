@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import * as cheerio from 'cheerio';
 import axios from 'axios';
+import { ElMessage } from 'element-plus';
 const setHtmlStyleProp = (color) => {
   /** 变量前缀 */
   const PRE = '--el-color-primary'
@@ -124,15 +125,16 @@ export const useBookmarkStore = defineStore('bookmark', () => {
 });
 
 // 应用管理
+const defaultConfig = {
+  backgroundUrl: '',
+  bgSource: 'birdpaper',
+  themeColor: '#409eff',
+  copyright: ' © 2025 Powered By Boycot',
+  isBlurBg: false,
+  version: '1.0.0'
+}
 export const useAppStore = defineStore('app', () => {
-  const appData = ref({
-    icons: [],
-    backgroundUrl: '',
-    bgSource: 'birdpaper',
-    themeColor: '#409eff',
-    copyright: ' © 2025 Powered By boycot',
-    version: '1.0.0'
-  });
+  const appData = ref({ icons: [], ...defaultConfig });
 
   const addApp = (app) => {
     appData.value.icons.push({
@@ -144,8 +146,11 @@ export const useAppStore = defineStore('app', () => {
   const updateIcons = (newIcons) => {
     appData.value.icons = newIcons;
   };
-  const setBackground = (url) => {
-    appData.value.backgroundUrl = url;
+  const setBackground = (url, isBlurBg = appData.value.isBlurBg) => {
+    setTimeout(() => {
+      appData.value.backgroundUrl = url;
+    }, 290);
+    appData.value.isBlurBg = isBlurBg;
   };
   const setTheme = (themeColor) => {
     appData.value.themeColor = themeColor;
@@ -157,6 +162,11 @@ export const useAppStore = defineStore('app', () => {
   const setBgSource = (source) => {
     appData.value.bgSource = source;
   };
+  const reset = () => {
+    appData.value = { ...appData.value, ...defaultConfig };
+    setTheme(appData.value.themeColor)
+    ElMessage.success('重置成功');
+  }
   return {
     appData,
     addApp,
@@ -165,7 +175,8 @@ export const useAppStore = defineStore('app', () => {
     setBgSource,
     getFaviconUrl,
     setTheme,
-    setCopyright
+    setCopyright,
+    reset
   };
 }, {
   persist: true // 启用持久化

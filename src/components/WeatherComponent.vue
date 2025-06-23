@@ -1,6 +1,6 @@
 <template>
   <div class="weather-component drop-shadow text-[#fff] text-[20px] sm:text-[28px]">
-      <el-dropdown @command="fetchWeatherData" max-height="200">
+      <el-dropdown :hide-on-click="false" trigger="click" @command="fetchWeatherData" @visible-change="onVisibleChange" max-height="200">
         <span class="el-dropdown-link flex items-center text-[#fff] text-[20px] sm:text-[28px]">
           {{city}}
           <el-icon class="el-icon--right">
@@ -8,11 +8,9 @@
           </el-icon>
         </span>
         <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item v-for="city in cities" :key="city.value" :command="city.value">
-              {{ city.name }}
-            </el-dropdown-item>
-          </el-dropdown-menu>
+          <el-select v-model="city" ref="citySelectRef" class="w-[150px]" filterable placeholder="请选择城市" @change="fetchWeatherData">
+            <el-option v-for="city in citys" :key="city.value" :label="city.name" :value="city.value" />
+          </el-select>
         </template>
       </el-dropdown>
       <div v-html="weatherIcon" alt="Weather Icon"></div>
@@ -21,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, nextTick } from 'vue';
 import { getCityByGeolocation } from '@/utils';
 import { ArrowDown } from '@element-plus/icons-vue';
 const weatherIcons = {
@@ -47,7 +45,7 @@ const weatherIcons = {
     '冰雹': '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from Material Symbols by Google - https://github.com/google/material-design-icons/blob/master/LICENSE --><path fill="currentColor" d="M12.5 23L11 21.5l1.5-1.5l1.5 1.5zm-3.45-1.5L8 20.45l2.95-2.95L12 18.55zM15.5 20L14 18.5l1.5-1.5l1.5 1.5zm-9 0L5 18.5L6.5 17L8 18.5zm1-4q-2.275 0-3.887-1.612T2 10.5q0-2.075 1.375-3.625t3.4-1.825q.8-1.425 2.188-2.238T12 2q2.25 0 3.913 1.438t2.012 3.587q1.725.15 2.9 1.425T22 11.5q0 1.875-1.312 3.188T17.5 16zm0-2h10q1.05 0 1.775-.725T20 11.5t-.725-1.775T17.5 9H16V8q0-1.65-1.175-2.825T12 4q-1.2 0-2.187.65T8.325 6.4l-.25.6H7.45q-1.425.05-2.437 1.063T4 10.5q0 1.45 1.025 2.475T7.5 14M12 9"/></svg>',
     '台风': '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><!-- Icon from MingCute Icon by MingCute Design - https://github.com/Richard9394/MingCute/blob/main/LICENSE --><g fill="none" fill-rule="evenodd"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="currentColor" d="M14 2c2.397 0 4.6.844 6.323 2.252l.985.804c.455.372.16 1.108-.425 1.063l-1.268-.096a8.2 8.2 0 0 0-2.159.126A7.98 7.98 0 0 1 20 12c0 5.523-4.477 10-10 10a9.97 9.97 0 0 1-6.322-2.251l-.985-.805c-.455-.372-.16-1.108.425-1.063l1.268.096c.72.054 1.464.01 2.159-.126A7.98 7.98 0 0 1 4 12C4 6.477 8.478 2 14 2m0 2a8 8 0 0 0-8 8a6 6 0 0 0 3.2 5.308l.719.38a.608.608 0 0 1-.028 1.085c-.731.34-1.472.662-2.249.874A8 8 0 0 0 18 12a6 6 0 0 0-3.199-5.308l-.719-.38a.608.608 0 0 1 .028-1.085c.731-.34 1.472-.662 2.249-.874A8 8 0 0 0 14 4m-2 5a3 3 0 1 1 0 6a3 3 0 0 1 0-6m0 2a1 1 0 1 0 0 2a1 1 0 0 0 0-2"/></g></svg>'
 }
-const cities = [
+const citys = ref([
   { name: '北京市', value: '北京市' },
   { name: '上海市', value: '上海市' },
   { name: '广州市', value: '广州市' },
@@ -60,10 +58,11 @@ const cities = [
   { name: '西安市', value: '西安市' },
   { name: '重庆市', value: '重庆市' },
   { name: '杭州市', value: '杭州市' }
-];
+]);
 const city = ref('深圳市');
+const citySelectRef = ref(null);
 const weatherIcon = ref(weatherIcons['晴']);
-const temperature = ref('');
+const temperature = ref('25');
 watch(city, (newCity) => {
   if (newCity) {
     fetchWeatherData(newCity);
@@ -81,6 +80,24 @@ const fetchWeatherData = async (location) => {
     console.error('Failed to fetch weather data:', error);
   }
 };
+
+const getCitys = async () => {
+  try {
+    const response = await fetch('/region.json');
+    const data = await response.json();    
+    citys.value = data.cityList.map(el => ({ name: el.regionName, value: el.regionName }));
+  } catch (error) {
+    console.error('Failed to fetch weather data:', error);
+  }
+}
+getCitys();
+const onVisibleChange = (val) => {
+  if (val) {
+    nextTick(() => {
+      citySelectRef.value.focus();
+    });
+  }
+}
 onMounted(async () => {
   try {
     city.value = await getCityByGeolocation()
@@ -97,8 +114,11 @@ onMounted(async () => {
   align-items: center;
   gap: 8px;
 }
-/* /deep/.el-select__wrapper {
+::deep(.el-select__wrapper) {
   background-color: transparent !important;
   color: #fff !important;
-} */
+}
+::deep(.el-select__input) {
+  color: #fff !important;
+}
 </style>

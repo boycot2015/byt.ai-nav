@@ -10,7 +10,7 @@
       <el-form-item prop="icon" :label="`${appText}图标:`">
         <el-input v-model="appForm.icon" placeholder="如：https://baidu.com/favicon.ico">
           <template #append v-if="showIcons">
-            <el-button :disabled="!appForm.url" @click="getIcon" :loading="loading">动态获取</el-button>
+            <el-button :disabled="!appForm.url" class="!flex items-center" @click="getIcon" :loading="loading">动态获取</el-button>
           </template>
         </el-input>
       </el-form-item>

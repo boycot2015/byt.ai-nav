@@ -6,7 +6,7 @@
     </div>
     <div class="container relative z-10 px-[20px] xl:px-0 min-h-[calc(100vh-100px)]">
         <div class="max-w-[1000px] m-auto mb-[30px]">
-          <div class="flex items-center">
+          <div class="flex items-center mb-2 md:mb-0">
             <TimeComponent class="flex-3" />
             <WeatherComponent />
           </div>
@@ -38,7 +38,9 @@
     <footer class="drap-shadow relative z-10 text-[#fff] text-center mb-2">
       {{ appStore.appData.copyright }}
     </footer>
-    <div :class="`bg transition fixed top-[0px] left-[0px] h-full w-full z-1 ${isBgChange && 'active'}`" :style="{background: `url(${backgroundUrl}) center/cover no-repeat fixed`}"></div>
+    <div :class="`bg transition fixed top-[0px] left-[0px] h-full w-full z-1 ${isBgChange && 'active'}`" :style="{background: `url(${backgroundUrl}) center/cover no-repeat fixed`}">
+      <div :class="`w-full h-full ${appStore.appData.isBlurBg ? 'backdrop-blur-lg' : ''}`"></div>
+    </div>
     <AddAppDialog v-model="appVisible" />
     <context-menu name="setting-menu">
       <context-menu-item @itemClickHandle="openSetting"><div class="flex items-center"><el-icon class="mr-2"><Setting /></el-icon>设置</div></context-menu-item>
@@ -80,7 +82,7 @@ const emitContext = inject('emitContext')
 const isBgChange = ref(false);
 const appStore = useAppStore();
 
-const backgroundUrl = ref(appStore.appData.backgroundUrl || '');
+const backgroundUrl = computed(() => appStore.appData.backgroundUrl || '');
 const onSettingChange = (url) => {
   isBgChange.value = true;
   const img = new Image();
